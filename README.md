@@ -1,8 +1,8 @@
-# CARLA Autonomous Vehicle Simulation
+# CARLA simulation of a reinforcement learning self-driving model
 
-AI-controlled vehicle in CARLA simulator using LiDAR-to-camera projection for obstacle detection and navigation.
+The goal of this simulation is to test a self-driving reinforcement learning model using input from 3 cameras and a LiDAR attached to the vehicle.
 
-## Features
+## Simulation Features
 
 - **Synchronous simulation** - Deterministic sensor data capture
 - **Multi-camera setup** - Front, left, and right cameras (1920x1080, 90° FOV)
@@ -17,8 +17,6 @@ AI-controlled vehicle in CARLA simulator using LiDAR-to-camera projection for ob
 pip install -r requirements.txt
 ```
 
-Requires CARLA simulator running on `localhost:2000`.
-
 ## Pipeline Overview
 
 ### 1. Connection & Configuration
@@ -27,8 +25,8 @@ Requires CARLA simulator running on `localhost:2000`.
 - Configure traffic manager
 
 ### 2. Environment Setup
-- Clear all map layers (buildings, props, foliage)
-- Keep only road surfaces for clean environment
+- [OPTIONAL] Clear all map layers (buildings, props, foliage)
+- [OPTIONAL] Keep only road surfaces for clean environment
 
 ### 3. Vehicle & Sensors
 - Spawn Tesla Model 3
@@ -90,34 +88,6 @@ Key parameters in notebook:
 - `capture_interval_seconds` - Data save frequency (default: 0.5s)
 - `obstacle_threshold` - AI obstacle detection sensitivity (default: 0.15)
 - `ai_default_throttle` - Forward speed (default: 0.5)
-
-## Output Format
-
-**Fusion metadata** (`fusion/*.json`):
-```json
-{
-  "frame_id": 0,
-  "timestamp": 0.5,
-  "cameras": {
-    "front": "camera_front/frame_000000.jpg",
-    "left": "camera_left/frame_000000.jpg",
-    "right": "camera_right/frame_000000.jpg"
-  },
-  "lidar_projections": {
-    "front": "lidar_projection/camera_front/frame_000000.jpg",
-    ...
-  },
-  "projection_point_counts": {"front": 1234, ...},
-  "lidar": {
-    "file": "lidar/lidar_000000.npy",
-    "num_points": 98765
-  }
-}
-```
-
-**LiDAR point cloud** (`lidar/*.npy`):
-- NumPy array shape: `(N, 4)`
-- Columns: `[x, y, z, intensity]`
 
 ## Notes
 
