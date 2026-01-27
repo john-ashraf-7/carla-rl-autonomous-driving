@@ -34,7 +34,7 @@ class Config:
     camera_fov: int = 90
     
     # LiDAR Configuration
-    lidar_channels: int = 64
+    lidar_channels: int = 32
     lidar_points_per_second: int = 1200000
     lidar_rotation_frequency: int = 20
     lidar_range: int = 100  # meters
