@@ -7,6 +7,8 @@ from .sensors import spawn_cameras, spawn_lidar, create_sensor_queues
 from .projection import project_lidar_to_camera, save_projection_image
 from .steering import lidar_density_steering
 from .spectator import update_spectator_view
+from .waypoint_planning import lidar_density_to_waypoint
+from .trajectory_control import TrajectoryController
 
 __all__ = [
     'Config',
@@ -23,4 +25,6 @@ __all__ = [
     'save_projection_image',
     'lidar_density_steering',
     'update_spectator_view',
+    'lidar_density_to_waypoint',
+    'TrajectoryController',
 ]

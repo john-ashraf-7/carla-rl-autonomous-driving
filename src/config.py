@@ -47,6 +47,16 @@ class Config:
     close_distance_threshold: float = 25.0  # meters
     close_weight_multiplier: float = 4.0
     
+    # Waypoint Planning Parameters
+    lookahead_distance: float = 10.0  # meters - how far ahead to plan
+    max_lateral_offset: float = 5.0  # meters - max left/right deviation
+    
+    # Trajectory Control Parameters
+    max_steering_angle: float = 25.0  # degrees - max steering lock angle
+    steering_throttle_reduction: float = 0.5  # reduce throttle during turns
+    brake_steering_threshold: float = 0.7  # steering magnitude to trigger braking
+    brake_strength: float = 0.3  # brake intensity when turning sharp
+    
     # Visualization
     dot_extent: int = 2  # LiDAR projection dot size
     
