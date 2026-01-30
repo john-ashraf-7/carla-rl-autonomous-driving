@@ -67,15 +67,38 @@ def project_lidar_to_camera(lidar_data, lidar, camera, camera_array, K, config):
         np.interp(intensity, VID_RANGE, VIRIDIS[:, 0]) * 255.0
     ]).astype(np.uint8).T
     
-    # Draw points on image
+    # Draw points on image (vectorized)
     im_array = camera_array.copy()
     u, v = points_2d[:, 0].astype(int), points_2d[:, 1].astype(int)
     dot_extent = config.dot_extent
     
-    for i in range(len(points_2d)):
-        v_min, v_max = max(0, v[i] - dot_extent), min(image_h, v[i] + dot_extent + 1)
-        u_min, u_max = max(0, u[i] - dot_extent), min(image_w, u[i] + dot_extent + 1)
-        im_array[v_min:v_max, u_min:u_max] = colors[i]
+    # Generate all pixel offsets for the dot square
+    offsets = np.arange(-dot_extent, dot_extent + 1)
+    dv, du = np.meshgrid(offsets, offsets, indexing='ij')
+    dv, du = dv.ravel(), du.ravel()  # Flatten to 1D
+    
+    # Broadcast: (N_points, N_offsets) pixel coordinates
+    v_pixels = v[:, None] + dv[None, :]  # Shape: (N, offset_count)
+    u_pixels = u[:, None] + du[None, :]
+    
+    # Create mask for valid pixels within image bounds
+    valid = (v_pixels >= 0) & (v_pixels < image_h) & (u_pixels >= 0) & (u_pixels < image_w)
+    
+    # Flatten and apply mask
+    v_flat = v_pixels.ravel()
+    u_flat = u_pixels.ravel()
+    valid_flat = valid.ravel()
+    
+    # Repeat colors for each offset, then mask
+    colors_expanded = np.repeat(colors, len(dv), axis=0)
+    
+    # Apply valid pixels
+    v_valid = v_flat[valid_flat]
+    u_valid = u_flat[valid_flat]
+    colors_valid = colors_expanded[valid_flat]
+    
+    # Draw all points at once using advanced indexing
+    im_array[v_valid, u_valid] = colors_valid
     
     return im_array, len(points_2d), weighted_density
 

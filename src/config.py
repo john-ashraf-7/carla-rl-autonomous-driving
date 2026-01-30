@@ -29,13 +29,13 @@ class Config:
     vehicle_blueprint: str = 'vehicle.tesla.model3'
     
     # Camera Configuration
-    camera_width: int = 1920
-    camera_height: int = 1080
+    camera_width: int = 800
+    camera_height: int = 600
     camera_fov: int = 90
     
     # LiDAR Configuration
-    lidar_channels: int = 32
-    lidar_points_per_second: int = 1200000
+    lidar_channels: int = 16
+    lidar_points_per_second: int = 300000
     lidar_rotation_frequency: int = 20
     lidar_range: int = 100  # meters
     lidar_upper_fov: int = 10
