@@ -31,9 +31,10 @@ def lidar_density_to_waypoint(projection_counts, vehicle, config: Config = None)
     if config is None:
         config = Config()
     
-    front_count = projection_counts.get('front', 0)
-    left_count = projection_counts.get('left', 0)
-    right_count = projection_counts.get('right', 0)
+    # Support both naming conventions: 'front' and 'camera_front'
+    front_count = projection_counts.get('camera_front', projection_counts.get('front', 0))
+    left_count = projection_counts.get('camera_left', projection_counts.get('left', 0))
+    right_count = projection_counts.get('camera_right', projection_counts.get('right', 0))
     
     # Get vehicle transform for coordinate conversion
     vehicle_transform = vehicle.get_transform()
@@ -43,17 +44,17 @@ def lidar_density_to_waypoint(projection_counts, vehicle, config: Config = None)
     # Determine preferred direction based on density
     # Lower density = clearer path = preferred direction
     if front_count < left_count and front_count < right_count:
-        direction = "STRAIGHT"
+        direction = "F"
         lateral_offset = 0.0
     else:
         # Choose between left and right based on which has lower density
         if left_count > right_count:
-            direction = "RIGHT"
+            direction = "R"
             # Steer right: positive lateral offset
             density_diff = (left_count - right_count) / max(left_count + right_count, 1.0)
             lateral_offset = density_diff * config.max_lateral_offset
         else:
-            direction = "LEFT"
+            direction = "L"
             # Steer left: negative lateral offset
             density_diff = (right_count - left_count) / max(left_count + right_count, 1.0)
             lateral_offset = -density_diff * config.max_lateral_offset
@@ -91,11 +92,11 @@ def lidar_density_to_waypoint(projection_counts, vehicle, config: Config = None)
 
 def get_waypoint_direction_string(direction, lateral_offset):
     """Get human-readable direction string for logging."""
-    if direction == "STRAIGHT":
+    if direction == "F":
         return "STRAIGHT (front clear)"
-    elif direction == "RIGHT":
+    elif direction == "R":
         return f"RIGHT ({lateral_offset:.2f}m)"
-    elif direction == "LEFT":
+    elif direction == "L":
         return f"LEFT ({lateral_offset:.2f}m)"
     else:
         return "UNKNOWN"
